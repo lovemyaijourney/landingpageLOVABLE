@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landing Page with Chatbot</title>
+  <style>
+    #chatbot {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+    }
+    #chat-window {
+      width: 300px;
+      height: 400px;
+      border: 1px solid #ccc;
+      border-radius: 12px;
+      background: #fff;
+      display: none;
+      flex-direction: column;
+    }
+    #messages {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+    }
+    #userInput {
+      width: 80%;
+      padding: 5px;
+    }
+    #sendBtn {
+      width: 20%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Welcome to My Landing Page 🚀</h1>
+  
+  <div id="chatbot">
+    <button onclick="toggleChat()">💬 Chat</button>
+    <div id="chat-window">
+      <div id="messages"></div>
+      <input type="text" id="userInput" placeholder="Type a message..." />
+      <button id="sendBtn" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <script>
+    function toggleChat() {
+      const chat = document.getElementById("chat-window");
+      chat.style.display = chat.style.display === "none" ? "flex" : "none";
+    }
+
+    async function sendMessage() {
+      const input = document.getElementById("userInput");
+      const msg = input.value;
+      if (!msg) return;
+
+      document.getElementById("messages").innerHTML += `<p><b>You:</b> ${msg}</p>`;
+
+      // Send message to backend
+const res = await fetch("/.netlify/functions/chat", {
+  method: "POST",
+  headers: {"Content-Type": "application/json"},
+  body: JSON.stringify({ message: msg })
+});
+
+
+      const data = await res.json();
+      document.getElementById("messages").innerHTML += `<p><b>Bot:</b> ${data.reply}</p>`;
+      input.value = "";
+    }
+  </script>
+</body>
+</html>
